@@ -25,3 +25,10 @@ dist-ssr
 
 # Vite specific
 .vite
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
