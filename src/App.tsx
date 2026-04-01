@@ -300,11 +300,12 @@ function App() {
         setRawMatrix("");
         setSelectedSolution(name);
         setEvalResults(null);
+        setHasConstant(true); // Automatically enable constants for predefined solutions
         const parsed = parseCoefficientMatrix(text);
         if (parsed.length > 0) {
             const k = parsed.length;
             const cols = parsed[0].length;
-            const n = hasConstant ? cols - 1 : cols;
+            const n = cols - 1; // Always assume constant for these files as per request
             setNumHyperplanes(k);
             setDimension(n);
             setCoefficients(parsed);
@@ -525,7 +526,10 @@ function App() {
                                                             </TableCell>
                                                         ))}
                                                         <TableCell align="center"
-                                                            sx={{ fontWeight: 900, fontSize: '0.85rem', backgroundColor: '#e8edf5', whiteSpace: 'nowrap' }}>
+                                                            sx={{ 
+                                                                fontWeight: 900, fontSize: '0.85rem', backgroundColor: '#e8edf5', whiteSpace: 'nowrap',
+                                                                position: 'sticky', right: 0, zIndex: 3, boxShadow: '-2px 0 5px -2px rgba(0,0,0,0.1)'
+                                                            }}>
                                                             Edges Sliced
                                                         </TableCell>
                                                     </TableRow>
@@ -558,7 +562,11 @@ function App() {
                                                                 </TableCell>
                                                             ))}
                                                             <TableCell align="center"
-                                                                sx={{ fontWeight: 700, fontSize: '0.95rem', color: results?.cutsPerHyperplane?.[i] ? '#1a3a5c' : '#aaa', backgroundColor: '#f9fbfd', whiteSpace: 'nowrap' }}>
+                                                                sx={{ 
+                                                                    fontWeight: 700, fontSize: '0.95rem', color: results?.cutsPerHyperplane?.[i] ? '#1a3a5c' : '#aaa', 
+                                                                    backgroundColor: '#f9fbfd', whiteSpace: 'nowrap',
+                                                                    position: 'sticky', right: 0, zIndex: 1, boxShadow: '-2px 0 5px -2px rgba(0,0,0,0.1)' 
+                                                                }}>
                                                                 {results?.cutsPerHyperplane?.[i] ?? '—'}
                                                             </TableCell>
                                                         </TableRow>
