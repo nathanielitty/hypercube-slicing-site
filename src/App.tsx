@@ -403,7 +403,7 @@ function App() {
                             An edge is sliced by a hyperplane if the two vertices connected by the edge lie on opposite sides of the hyperplane.
                         </Typography>
                         <Typography variant="body2" sx={{ mb: 1.5, color: '#444', lineHeight: 1.8 }}>
-                            Our work improves the decades-old upper bound of {'$S(n) \\leq \\lceil 5n/6 \\rceil$'} established in 1971 by Mike Paterson.
+                            Our work improves the decades-old upper bound of {'$S(n) \\leq \\lceil \\frac{5n}{6} \\rceil$'} established in 1971 by Mike Paterson.
                             We prove that {'$S(n) \\leq \\lceil \\frac{4n}{5} \\rceil$'}, except when {'$n$'} is an odd multiple of 5, in which case {'$S(n) \\leq \\frac{4n}{5} + 1$'}, with the discovery of {'$8$'} hyperplanes for {'$n=10$'} that slice all 5120 edges. This new upper bound was found using local search techniques, aided by the recently introduced CPro1.
                         </Typography>
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
