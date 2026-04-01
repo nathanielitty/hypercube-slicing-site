@@ -630,7 +630,7 @@ function App() {
                                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                                     <Box sx={{ ...cardSx, p: 0, pt: 3 }}>
                                         <Box sx={{ px: 3 }}>
-                                            <Grid container spacing={3} alignItems="flex-end">
+                                            <Grid container spacing={3} alignItems="flex-start">
                                                 <Grid size={{ xs: 12, md: 'auto' }}>
                                                     <Typography variant="caption" sx={{ fontWeight: 800, mb: 1, display: 'block' }}>Vertex u</Typography>
                                                     <Box sx={{ display: 'flex', flexWrap: 'nowrap', borderTop: '1px solid #e0e0e0', borderLeft: '1px solid #e0e0e0', width: 'fit-content' }}>
@@ -650,6 +650,12 @@ function App() {
                                                             </Box>
                                                         ))}
                                                     </Box>
+                                                    {showReducedEval && (
+                                                        <Box sx={{ mt: 1.5, fontFamily: 'monospace', fontSize: '1rem', color: '#555', display: 'flex', alignItems: 'center' }}>
+                                                            <Box component="span" sx={{ fontWeight: 900, mr: 1, color: '#1a3a5c' }}>u<sup>β</sup>:</Box>
+                                                            [{calculateReducedCoords(v1Input, autoReduced.mappings).join(', ')}]
+                                                        </Box>
+                                                    )}
                                                 </Grid>
                                                 <Grid size={{ xs: 12, md: 'auto' }}>
                                                     <Typography variant="caption" sx={{ fontWeight: 800, mb: 1, display: 'block' }}>Vertex v</Typography>
@@ -670,8 +676,15 @@ function App() {
                                                             </Box>
                                                         ))}
                                                     </Box>
+                                                    {showReducedEval && (
+                                                        <Box sx={{ mt: 1.5, fontFamily: 'monospace', fontSize: '1rem', color: '#555', display: 'flex', alignItems: 'center' }}>
+                                                            <Box component="span" sx={{ fontWeight: 900, mr: 1, color: '#1a3a5c' }}>v<sup>β</sup>:</Box>
+                                                            [{calculateReducedCoords(v2Input, autoReduced.mappings).join(', ')}]
+                                                        </Box>
+                                                    )}
                                                 </Grid>
                                                 <Grid size={{ xs: 12, md: 'auto' }}>
+                                                    <Typography variant="caption" sx={{ fontWeight: 800, mb: 1, display: 'block', visibility: 'hidden' }}>Spacer</Typography>
                                                     <Button variant="contained" color="primary" onClick={handleRandomEdge}
                                                         sx={{ px: 4, py: 1.25, boxShadow: 'none' }}>
                                                         Random Edge
@@ -714,62 +727,60 @@ function App() {
                                                     </TableRow>
                                                 </TableHead>
                                                 <TableBody>
-                                                    {evalResults.sliced.map((s, i) => {
+                                                    {(() => {
                                                         const r = autoReduced;
                                                         const ru = calculateReducedCoords(evalResults.v1, r.mappings);
                                                         const rv = calculateReducedCoords(evalResults.v2, r.mappings);
                                                         return (
-                                                            <TableRow key={i}
-                                                                sx={{
-                                                                    backgroundColor: s ? '#d1e9ff' : 'inherit',
-                                                                    '&:hover td': { backgroundColor: s ? '#b3d9ff !important' : '#dbeafe !important' },
-                                                                }}>
-                                                                <TableCell align="center"
-                                                                    sx={{ color: s ? '#1a3a5c' : '#888', fontWeight: 800, fontSize: '1.1rem' }}>
-                                                                    {i + 1}
-                                                                </TableCell>
-                                                                <TableCell sx={{ fontFamily: 'monospace', fontSize: '1.05rem', py: 2 }}>
-                                                                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                                                                        <Box>
-                                                                            <Box component="span" sx={{ fontWeight: 900, mr: 1 }}>u:</Box>
-                                                                            <Box component="span" sx={{ color: s ? '#000' : '#444' }}>{formatEquation(numericCoefficients[i], evalResults.v1, evalResults.v1Evals[i])}</Box>
-                                                                        </Box>
-                                                                        <Box sx={{ borderTop: `1px solid ${s ? '#a9d0f5' : '#f0f0f0'}`, pt: 1 }}>
-                                                                            <Box component="span" sx={{ fontWeight: 900, mr: 1 }}>v:</Box>
-                                                                            <Box component="span" sx={{ color: s ? '#000' : '#444' }}>{formatEquation(numericCoefficients[i], evalResults.v2, evalResults.v2Evals[i])}</Box>
-                                                                        </Box>
-                                                                    </Box>
-                                                                </TableCell>
-                                                                {showReducedEval && (
-                                                                    <TableCell sx={{ fontFamily: 'monospace', fontSize: '1.05rem', py: 2 }}>
-                                                                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                                                                            <Box>
-                                                                                <Box component="span" sx={{ fontWeight: 900, mr: 1 }}>u<sup>β</sup>:</Box>
-                                                                                <Box component="span" sx={{ color: '#555', fontSize: '0.95rem', mr: 1 }}>
-                                                                                    [{ru.join(', ')}]
+                                                            <>
+                                                                {evalResults.sliced.map((s, i) => (
+                                                                    <TableRow key={i}
+                                                                        sx={{
+                                                                            backgroundColor: s ? '#d1e9ff' : 'inherit',
+                                                                            '&:hover td': { backgroundColor: s ? '#b3d9ff !important' : '#dbeafe !important' },
+                                                                        }}>
+                                                                        <TableCell align="center"
+                                                                            sx={{ color: s ? '#1a3a5c' : '#888', fontWeight: 800, fontSize: '1.1rem' }}>
+                                                                            {i + 1}
+                                                                        </TableCell>
+                                                                        <TableCell sx={{ fontFamily: 'monospace', fontSize: '1.05rem', py: 2 }}>
+                                                                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                                                                                <Box>
+                                                                                    <Box component="span" sx={{ fontWeight: 900, mr: 1 }}>u:</Box>
+                                                                                    <Box component="span" sx={{ color: s ? '#000' : '#444' }}>{formatEquation(numericCoefficients[i], evalResults.v1, evalResults.v1Evals[i])}</Box>
                                                                                 </Box>
-                                                                                <Box component="span" sx={{ color: s ? '#000' : '#444' }}>{formatReducedEquation(r.reducedCoeffs[i], ru, evalResults.v1Evals[i])}</Box>
-                                                                            </Box>
-                                                                            <Box sx={{ borderTop: `1px solid ${s ? '#a9d0f5' : '#f0f0f0'}`, pt: 1 }}>
-                                                                                <Box component="span" sx={{ fontWeight: 900, mr: 1 }}>v<sup>β</sup>:</Box>
-                                                                                <Box component="span" sx={{ color: '#555', fontSize: '0.95rem', mr: 1 }}>
-                                                                                    [{rv.join(', ')}]
+                                                                                <Box sx={{ borderTop: `1px solid ${s ? '#a9d0f5' : '#f0f0f0'}`, pt: 1 }}>
+                                                                                    <Box component="span" sx={{ fontWeight: 900, mr: 1 }}>v:</Box>
+                                                                                    <Box component="span" sx={{ color: s ? '#000' : '#444' }}>{formatEquation(numericCoefficients[i], evalResults.v2, evalResults.v2Evals[i])}</Box>
                                                                                 </Box>
-                                                                                <Box component="span" sx={{ color: s ? '#000' : '#444' }}>{formatReducedEquation(r.reducedCoeffs[i], rv, evalResults.v2Evals[i])}</Box>
                                                                             </Box>
-                                                                        </Box>
-                                                                    </TableCell>
-                                                                )}
-                                                                <TableCell align="center">
-                                                                    {s ? (
-                                                                        <Box component="span" sx={{ color: '#1a3a5c', fontWeight: 900, fontSize: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✓</Box>
-                                                                    ) : (
-                                                                        <Box component="span" sx={{ color: '#ccc' }}>—</Box>
-                                                                    )}
-                                                                </TableCell>
-                                                            </TableRow>
+                                                                        </TableCell>
+                                                                        {showReducedEval && (
+                                                                            <TableCell sx={{ fontFamily: 'monospace', fontSize: '1.05rem', py: 2 }}>
+                                                                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                                                                                    <Box>
+                                                                                        <Box component="span" sx={{ fontWeight: 900, mr: 1 }}>u<sup>β</sup>:</Box>
+                                                                                        <Box component="span" sx={{ color: s ? '#000' : '#444' }}>{formatReducedEquation(r.reducedCoeffs[i], ru, evalResults.v1Evals[i])}</Box>
+                                                                                    </Box>
+                                                                                    <Box sx={{ borderTop: `1px solid ${s ? '#a9d0f5' : '#f0f0f0'}`, pt: 1 }}>
+                                                                                        <Box component="span" sx={{ fontWeight: 900, mr: 1 }}>v<sup>β</sup>:</Box>
+                                                                                        <Box component="span" sx={{ color: s ? '#000' : '#444' }}>{formatReducedEquation(r.reducedCoeffs[i], rv, evalResults.v2Evals[i])}</Box>
+                                                                                    </Box>
+                                                                                </Box>
+                                                                            </TableCell>
+                                                                        )}
+                                                                        <TableCell align="center">
+                                                                            {s ? (
+                                                                                <Box component="span" sx={{ color: '#1a3a5c', fontWeight: 900, fontSize: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✓</Box>
+                                                                            ) : (
+                                                                                <Box component="span" sx={{ color: '#ccc' }}>—</Box>
+                                                                            )}
+                                                                        </TableCell>
+                                                                    </TableRow>
+                                                                ))}
+                                                            </>
                                                         );
-                                                    })}
+                                                    })()}
                                                 </TableBody>
                                             </Table>
                                         </TableContainer>
