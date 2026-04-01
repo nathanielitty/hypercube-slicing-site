@@ -10,6 +10,7 @@ import {
 import {
     ThemeProvider,
     createTheme,
+    responsiveFontSizes,
     CssBaseline,
     Container,
     Typography,
@@ -51,7 +52,7 @@ const INITIAL = parseSolution(
     Object.keys(DEFAULT_SOLUTIONS).sort().find(k => k.includes("n=10") && k.includes("k=8") && k.includes("Solution 1")) || ""
 );
 
-const theme = createTheme({
+let theme = createTheme({
     palette: {
         mode: 'light',
         primary: { main: '#1a3a5c' },
@@ -101,6 +102,8 @@ const theme = createTheme({
         }
     }
 });
+
+theme = responsiveFontSizes(theme);
 
 function App() {
     const [dimension, setDimension] = useState(INITIAL.n);
@@ -583,7 +586,7 @@ function App() {
                                             flexDirection: 'column',
                                             gap: 1
                                         }}>
-                                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
                                                 <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1.5 }}>
                                                     <Typography variant="h5" sx={{ fontWeight: 900 }}>
                                                         {results?.full?.sliced ?? 0} / {results?.full?.total ?? 0}
@@ -633,7 +636,7 @@ function App() {
                                             <Grid container spacing={3} alignItems="flex-start">
                                                 <Grid size={{ xs: 12, md: 'auto' }}>
                                                     <Typography variant="caption" sx={{ fontWeight: 800, mb: 1, display: 'block' }}>Vertex u</Typography>
-                                                    <Box sx={{ display: 'flex', flexWrap: 'nowrap', borderTop: '1px solid #e0e0e0', borderLeft: '1px solid #e0e0e0', width: 'fit-content' }}>
+                                                    <Box sx={{ display: 'flex', flexWrap: 'nowrap', borderTop: '1px solid #e0e0e0', borderLeft: '1px solid #e0e0e0', width: 'fit-content', maxWidth: '100%', overflowX: 'auto' }}>
                                                         {v1Input.map((val, idx) => (
                                                             <Box key={idx}
                                                                 onClick={() => { const n = [...v1Input]; n[idx] = val === 1 ? -1 : 1; setV1Input(n); }}
@@ -659,7 +662,7 @@ function App() {
                                                 </Grid>
                                                 <Grid size={{ xs: 12, md: 'auto' }}>
                                                     <Typography variant="caption" sx={{ fontWeight: 800, mb: 1, display: 'block' }}>Vertex v</Typography>
-                                                    <Box sx={{ display: 'flex', flexWrap: 'nowrap', borderTop: '1px solid #e0e0e0', borderLeft: '1px solid #e0e0e0', width: 'fit-content' }}>
+                                                    <Box sx={{ display: 'flex', flexWrap: 'nowrap', borderTop: '1px solid #e0e0e0', borderLeft: '1px solid #e0e0e0', width: 'fit-content', maxWidth: '100%', overflowX: 'auto' }}>
                                                         {v2Input.map((val, idx) => (
                                                             <Box key={idx}
                                                                 onClick={() => { const n = [...v2Input]; n[idx] = val === 1 ? -1 : 1; setV2Input(n); }}
@@ -718,7 +721,7 @@ function App() {
                                             <Table size="small">
                                                 <TableHead>
                                                     <TableRow sx={{ backgroundColor: '#e8edf5' }}>
-                                                        <TableCell align="center" sx={{ fontWeight: 800 }}>Hyperplane</TableCell>
+                                                        <TableCell align="center" sx={{ fontWeight: 800, minWidth: { xs: 80, sm: 100 }, width: { xs: 80, sm: 100 }, whiteSpace: 'nowrap' }}>Hyperplane</TableCell>
                                                         <TableCell sx={{ fontWeight: 800 }}>Evaluation</TableCell>
                                                         {showReducedEval && (
                                                             <TableCell sx={{ fontWeight: 800 }}>Reduced Evaluation</TableCell>
