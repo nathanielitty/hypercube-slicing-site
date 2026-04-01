@@ -123,8 +123,16 @@ function App() {
     const [evalResults, setEvalResults] = useState<{ v1: number[], v2: number[], v1Evals: number[], v2Evals: number[], sliced: boolean[] } | null>(null);
 
     const [showTextArea, setShowTextArea] = useState(false);
-    const [showReducedEval, setShowReducedEval] = useState(false);
-    const [showReducedScoreFooter, setShowReducedScoreFooter] = useState(false);
+    const [showReduced, setShowReduced] = useState(false);
+
+    const isValidEdge = useMemo(() => {
+        if (!v1Input || !v2Input || v1Input.length !== dimension || v2Input.length !== dimension) return false;
+        let diffCount = 0;
+        for (let i = 0; i < dimension; i++) {
+            if (v1Input[i] !== v2Input[i]) diffCount++;
+        }
+        return diffCount === 1;
+    }, [v1Input, v2Input, dimension]);
 
     useEffect(() => {
         // Trigger KaTeX rendering after mount
@@ -214,7 +222,11 @@ function App() {
 
         if (updated) setCoefficients(newCoeffs);
         if (v1Input.length !== dimension) setV1Input(Array(dimension).fill(-1));
-        if (v2Input.length !== dimension) setV2Input(Array(dimension).fill(1));
+        if (v2Input.length !== dimension) {
+            const defaultV2 = Array(dimension).fill(-1);
+            if (dimension > 0) defaultV2[0] = 1;
+            setV2Input(defaultV2);
+        }
     }, [dimension, numHyperplanes, hasConstant]);
 
     useEffect(() => {
@@ -400,7 +412,7 @@ function App() {
                         <Typography variant="h6" sx={{ mb: 1.5, color: '#1a3a5c' }}>About</Typography>
                         <Typography variant="body2" sx={{ mb: 1.5, color: '#444', lineHeight: 1.8 }}>
                             The Slicing the Hypercube problem aims to find the minimum number of hyperplanes, denoted {'$S(n)$'}, needed to intersect every edge of an {'$n$'}-dimensional hypercube with vertex set {'$\\{-1, 1\\}^n$'}.
-                            An edge is sliced by a hyperplane if the two vertices connected by the edge lie on opposite sides of the hyperplane.
+                            There exists an edge when two vertices differ by exactly one coordinate. An edge is sliced by a hyperplane if the two vertices connected by the edge lie on opposite sides of the hyperplane.
                         </Typography>
                         <Typography variant="body2" sx={{ mb: 1.5, color: '#444', lineHeight: 1.8 }}>
                             Our work improves the decades-old upper bound of {'$S(n) \\leq \\lceil \\frac{5n}{6} \\rceil$'} established in 1971 by Mike Paterson.
@@ -492,6 +504,12 @@ function App() {
                                                 </Button>
                                             </Box>
                                         </Collapse>
+
+                                        <Divider sx={{ my: 2 }} />
+                                        <FormControlLabel
+                                            control={<Switch size="small" checked={showReduced} onChange={e => setShowReduced(e.target.checked)} color="primary" />}
+                                            label={<Typography variant="body2" sx={{ fontWeight: 800 }}>Show Reduced Hypercube</Typography>}
+                                        />
                                     </Box>
                                 </Box>
 
@@ -593,14 +611,8 @@ function App() {
                                                     </Typography>
                                                     <Typography variant="body2" color="textSecondary" sx={{ fontWeight: 700, opacity: 0.8 }}>edges sliced</Typography>
                                                 </Box>
-                                                <Box sx={{ display: 'flex', alignItems: 'center', px: 2, py: 0.5 }}>
-                                                    <Typography variant="overline" sx={{ mr: 1, color: '#1a1a2e', fontWeight: 800, textTransform: 'none', fontSize: '0.9rem' }}>
-                                                        Show Reduced Hypercube
-                                                    </Typography>
-                                                    <Switch size="small" checked={showReducedScoreFooter} onChange={e => setShowReducedScoreFooter(e.target.checked)} />
-                                                </Box>
                                             </Box>
-                                            <Collapse in={showReducedScoreFooter}>
+                                            <Collapse in={showReduced}>
                                                 <Box sx={{
                                                     pt: 1.5,
                                                     borderTop: '1px dashed #cbd5e1',
@@ -632,7 +644,7 @@ function App() {
 
                                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                                     <Box sx={{ ...cardSx, p: 0, pt: 3 }}>
-                                        <Box sx={{ px: 3 }}>
+                                        <Box sx={{ px: 3, pb: (!isValidEdge && v1Input.length > 0 && v2Input.length > 0) ? 1 : 3 }}>
                                             <Grid container spacing={3} alignItems="flex-start">
                                                 <Grid size={{ xs: 12, md: 'auto' }}>
                                                     <Typography variant="caption" sx={{ fontWeight: 800, mb: 1, display: 'block' }}>Vertex u</Typography>
@@ -653,7 +665,7 @@ function App() {
                                                             </Box>
                                                         ))}
                                                     </Box>
-                                                    {showReducedEval && (
+                                                    {showReduced && (
                                                         <Box sx={{ mt: 1.5, fontFamily: 'monospace', fontSize: '1rem', color: '#555', display: 'flex', alignItems: 'center' }}>
                                                             <Box component="span" sx={{ fontWeight: 900, mr: 1, color: '#1a3a5c' }}>u<sup>β</sup>:</Box>
                                                             ({calculateReducedCoords(v1Input, autoReduced.mappings).join(', ')})
@@ -679,7 +691,7 @@ function App() {
                                                             </Box>
                                                         ))}
                                                     </Box>
-                                                    {showReducedEval && (
+                                                    {showReduced && (
                                                         <Box sx={{ mt: 1.5, fontFamily: 'monospace', fontSize: '1rem', color: '#555', display: 'flex', alignItems: 'center' }}>
                                                             <Box component="span" sx={{ fontWeight: 900, mr: 1, color: '#1a3a5c' }}>v<sup>β</sup>:</Box>
                                                             ({calculateReducedCoords(v2Input, autoReduced.mappings).join(', ')})
@@ -696,23 +708,13 @@ function App() {
                                             </Grid>
                                         </Box>
 
-                                        <Box sx={{
-                                            mt: 3,
-                                            px: 3,
-                                            py: 1,
-                                            borderTop: '1px solid #f1f5f9',
-                                            display: 'flex',
-                                            justifyContent: 'flex-end',
-                                            alignItems: 'center',
-                                            backgroundColor: '#f8fafc',
-                                            borderBottomLeftRadius: '10px',
-                                            borderBottomRightRadius: '10px'
-                                        }}>
-                                            <Typography variant="caption" sx={{ mr: 1, color: '#4a5568', fontWeight: 800, fontSize: '0.85rem' }}>
-                                                Show Reduced Hypercube
-                                            </Typography>
-                                            <Switch size="small" checked={showReducedEval} onChange={e => setShowReducedEval(e.target.checked)} color="primary" />
-                                        </Box>
+                                        {!isValidEdge && v1Input.length > 0 && v2Input.length > 0 && (
+                                            <Box sx={{ mt: 2, px: 3, pb: 2 }}>
+                                                <Typography variant="body2" sx={{ color: '#d32f2f', fontWeight: 800 }}>
+                                                    This is not a valid edge!
+                                                </Typography>
+                                            </Box>
+                                        )}
                                     </Box>
 
                                     {evalResults && (
@@ -723,7 +725,7 @@ function App() {
                                                     <TableRow sx={{ backgroundColor: '#e8edf5' }}>
                                                         <TableCell align="center" sx={{ fontWeight: 800, minWidth: { xs: 80, sm: 100 }, width: { xs: 80, sm: 100 }, whiteSpace: 'nowrap' }}>Hyperplane</TableCell>
                                                         <TableCell sx={{ fontWeight: 800 }}>Evaluation</TableCell>
-                                                        {showReducedEval && (
+                                                        {showReduced && (
                                                             <TableCell sx={{ fontWeight: 800 }}>Reduced Evaluation</TableCell>
                                                         )}
                                                         <TableCell align="center" sx={{ fontWeight: 800, width: 90 }}>Sliced?</TableCell>
@@ -758,7 +760,7 @@ function App() {
                                                                                 </Box>
                                                                             </Box>
                                                                         </TableCell>
-                                                                        {showReducedEval && (
+                                                                        {showReduced && (
                                                                             <TableCell sx={{ fontFamily: 'monospace', fontSize: '1.05rem', py: 2 }}>
                                                                                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                                                                                     <Box>
