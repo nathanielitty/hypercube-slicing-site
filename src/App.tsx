@@ -396,12 +396,12 @@ function App() {
                     <Box sx={{ ...cardSx, mb: 4, borderLeft: '4px solid #1a3a5c' }}>
                         <Typography variant="h6" sx={{ mb: 1.5, color: '#1a3a5c' }}>About</Typography>
                         <Typography variant="body2" sx={{ mb: 1.5, color: '#444', lineHeight: 1.8 }}>
-                            The Slicing the Hypercube problem aims to find the minimum number of hyperplanes, {'$S(n)$'}, needed to intersect every edge of an {'$n$'}-dimensional hypercube {'$Q_n$'} with vertex set {'$\\{-1, 1\\}^n$'}.
-                            An edge is sliced if the two vertices connected by the edge lie on opposite sides of the hyperplane.
+                            The Slicing the Hypercube problem aims to find the minimum number of hyperplanes, denoted {'$S(n)$'}, needed to intersect every edge of an {'$n$'}-dimensional hypercube with vertex set {'$\\{-1, 1\\}^n$'}.
+                            An edge is sliced by a hyperplane if the two vertices connected by the edge lie on opposite sides of the hyperplane.
                         </Typography>
                         <Typography variant="body2" sx={{ mb: 1.5, color: '#444', lineHeight: 1.8 }}>
                             Our research improves the decades-old upper bound of {'$S(n) \\leq \\lceil 5n/6 \\rceil$'} established in 1971 by Mike Paterson.
-                            We prove that {'$S(n) \\leq \\lceil \\frac{4n}{5} \\rceil$'}, except when {'$n$'} is an odd multiple of 5, in which case {'$S(n) \\leq \\frac{4n}{5} + 1$'} with the discovery of 8 hyperplanes for {'$n=10$'} that slice all 5120 edges using the AI-assisted search tool CPro1.
+                            We prove that {'$S(n) \\leq \\lceil \\frac{4n}{5} \\rceil$'}, except when {'$n$'} is an odd multiple of 5, in which case {'$S(n) \\leq \\frac{4n}{5} + 1$'} with the discovery of 8 hyperplanes for {'$n=10$'} that slice all 5120 edges using local search techniques, aided by the recently introduced CPro1.
                         </Typography>
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
                             <Typography variant="body2">
@@ -419,7 +419,7 @@ function App() {
                             <Typography variant="body2">
                                 <a href="https://blog.computationalcomplexity.org/2021/03/slicing-hypercube.html" target="_blank" rel="noopener noreferrer"
                                     style={{ color: '#1a3a5c', fontWeight: 700 }}>
-                                    Background
+                                    Background on the Problem
                                 </a>
                             </Typography>
                         </Box>
@@ -526,7 +526,7 @@ function App() {
                                                             </TableCell>
                                                         ))}
                                                         <TableCell align="center"
-                                                            sx={{ 
+                                                            sx={{
                                                                 fontWeight: 900, fontSize: '0.85rem', backgroundColor: '#e8edf5', whiteSpace: 'nowrap',
                                                                 position: 'sticky', right: 0, zIndex: 3, boxShadow: '-2px 0 5px -2px rgba(0,0,0,0.1)'
                                                             }}>
@@ -562,10 +562,10 @@ function App() {
                                                                 </TableCell>
                                                             ))}
                                                             <TableCell align="center"
-                                                                sx={{ 
-                                                                    fontWeight: 700, fontSize: '0.95rem', color: results?.cutsPerHyperplane?.[i] ? '#1a3a5c' : '#aaa', 
+                                                                sx={{
+                                                                    fontWeight: 700, fontSize: '0.95rem', color: results?.cutsPerHyperplane?.[i] ? '#1a3a5c' : '#aaa',
                                                                     backgroundColor: '#f9fbfd', whiteSpace: 'nowrap',
-                                                                    position: 'sticky', right: 0, zIndex: 1, boxShadow: '-2px 0 5px -2px rgba(0,0,0,0.1)' 
+                                                                    position: 'sticky', right: 0, zIndex: 1, boxShadow: '-2px 0 5px -2px rgba(0,0,0,0.1)'
                                                                 }}>
                                                                 {results?.cutsPerHyperplane?.[i] ?? '—'}
                                                             </TableCell>
